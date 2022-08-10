@@ -1,3 +1,64 @@
+/* --bg-color: #171717 !important;
+--font-color: #ededed !important;
+--hl-color: #da0037 !important;
+--fg-color: #444444 !important; */
+
+body {
+  margin: 0;
+  font-family: Inconsolata, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  scroll-behavior: smooth;
+}
+
+#root {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  --bg-color: black;
+  --font-color: lightslategray;
+  --hl-color: orange;
+  --fg-color: #292f34;
+  color: var(--font-color);
+  background-color: var(--bg-color);
+}
+
+button {
+  background-color: var(--bg-color);
+  color: var(--font-color);
+  border: 2px solid var(--font-color);
+  padding: 10px;
+  font-family: Inconsolata, monospace;
+  font-weight: 700;
+  margin: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--hl-color);
+  border-color: var(--hl-color);
+}
+
+input {
+  width: 50px;
+}
+
 .App {
-  text-align: center;
+  margin-top: 18rem;
+}
+
+.calc_area { 
+  padding: 38px 10px;
+}
+
+.answer {
+  padding-top: 25px;
 }

@@ -1,32 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { calculate } from "../utils";
 
 const symbols = ["(", "+", "-", "*", "/", ")"];
 
 const Editor = () => {
     const [answer, setAnswer] = useState(0);
-    const [question, setQuestion] = useState("");
-    const [questionElements, setQuestionElements] = useState([])
-    const [curSymbol, setCurSymbol] = useState("(")
+    const [questionElements, setQuestionElements] = useState([]);
+    const [formData, setFormData] = useState({});
 
     const getSymbols = () => {
         return symbols.map((symbol) => (
-            <option value={symbol}> {symbol} </option>
+            <button onClick={() => onSymbolClick(symbol)}> {symbol} </button>
         ))
     }
 
     const getQuestionElements = () => {
-        console.log("get question", questionElements)
         return questionElements.map( elem => (
             elem
         ))
-    }
-
-    const onSymbolChange = (e) => {
-        const value = e.target.value;
-        console.log(value)
-        if (value){
-            setCurSymbol(value)
-        }
     }
 
     const addToQuestionElements = (elem) => {
@@ -37,88 +28,58 @@ const Editor = () => {
         setQuestionElements(questionElementsVal)
     }
 
-    const addSymbol = () => {
-        addToQuestionElements(curSymbol)
+    const onSymbolClick = (symbol) => {
+        addToQuestionElements(symbol)
     }
 
-    const addVariable = () => {
-        const inputVar = <input type={"number"}/>
+    const onInputChange = (e) => {
+        const {name, value} = e.target; 
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    const addVariable = (e) => {
+        e.preventDefault();
+        const len = questionElements.length;
+        const inputVar = <input name={len} type={"number"} onChange={onInputChange}/>
         addToQuestionElements(inputVar);
     }
-    
-    useEffect(() => {
-        console.log("question elems")
-    }, [questionElements]) 
 
-    const calculate = () => {
-        const data = questionElements;
+    const getAnswer = (e) => {
+        e.preventDefault();
+        const data = questionElements.slice();
         let questData = "";
-        data.map( elem => {
+        data.map( (elem,key) => {
             if(typeof elem == "string"){
                 questData += elem
             }
             else{
-                console.log(elem)
-                questData += elem.value
+                questData += formData[key]
             }
             return ""
         }) 
-        const answer = _getAnswer(questData);
-        // const answer = _getAnswer("(0+0)");
-        console.log(answer);
-    }
-
-    const _getAnswer = (quest) => {
-        let output = 0;
-        let cur = 0;
-        let sign = 1;
-        let stack = [];
-        for (var c of quest){
-            if(parseInt(c)){ // int
-                cur = cur*10 + parseInt(c);
-            }
-            else if("+-".includes(c)){
-                output += (cur*sign) 
-                cur = 0;
-                if(c === "-"){
-                    sign = -1
-                }
-                else {
-                    sign = 1
-                }
-            }
-            else if (c === "("){
-                stack.push(output);
-                stack.push(sign);
-                output = 0
-                sign = 1
-            }
-            else if (c === ")"){
-                output += (cur*sign)
-                output += stack.pop();
-                output += stack.pop();
-                cur = 0
-            }
-        }
-        return output + (cur*sign) -1
+        const ans = calculate(questData);
+        setAnswer(ans);
     }
 
     return(
         <div>
             <button onClick={addVariable}>Add Variable</button>
-            <select onChange = {onSymbolChange}>
-                {   getSymbols()   }
-                <option></option>
-            </select>
-            <button onClick={addSymbol}>Add Symbol</button>
-            <section>
+            {
+                getSymbols()
+            }
+            <section className="calc_area">
                 <div>
                     { getQuestionElements()  }
                 </div>
-                <div> {`= ${answer}`}</div>
+                {
+                    questionElements.length > 0 && <div className="answer"> {`= ${answer}`}</div>
+                }
             </section>
             <section>
-                <button onClick={calculate}> Calculate Answer</button>
+                <button onClick={getAnswer}> Calculate Answer</button>
             </section>
         </div>
     );

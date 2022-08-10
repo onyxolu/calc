@@ -6,10 +6,8 @@ function App() {
   return (
     <div className="App">
       <div>
-        <button> Add a Question</button>
         <Editor/>
       </div>
-      {/* <Questions/> */}
     </div>
   );
 }
